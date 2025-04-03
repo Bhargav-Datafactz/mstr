@@ -18,6 +18,7 @@ await MSTR_API.post("/auth/login", {
     console.error("❌ Authentication Failed:", error.response?.data || error.message);
   }
 };
+console.log(authenticateMSTR)
  
 // 2️⃣ Create a Report Instance (Required Before Fetching Data)
 export const createMSTRReportInstance = async (REPORT_ID) => {
@@ -28,6 +29,7 @@ export const createMSTRReportInstance = async (REPORT_ID) => {
         {
           headers: {
             "X-MSTR-ProjectID": "95550C99497DAAC3AC19DD86D91C4BB3",
+            // "X-MSTR-AuthToken" : authenticateMSTR.headers.X-MSTR-AuthToken,
             "Accept": "application/json",  // 👈 Force JSON response
           }
         }
