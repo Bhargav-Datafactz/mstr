@@ -25,12 +25,17 @@ export const authenticateMSTR = async () => {
                     "Content-Type": "application/json",
                     "X-Requested-With": "XMLHttpRequest"  // Prevents redirects
                   },
-                withCredentials: true 
+                //withCredentials: true 
+                maxRedirects: 0, // 🚨 Prevents automatic redirects
+                validateStatus: (status) => status < 400 // Allow non-2xx responses
             }
             
         );
 
+       // console.log("📢 Full Login Response:", authResponse);
         console.log("📢 Full Login Response:", authResponse);
+        console.log("🔄 Response Headers:", authResponse.headers);
+        console.log("🔄 Response Data:", authResponse.data);
 
         // Extract Auth Token Correctly
         let authToken = authResponse.headers["x-mstr-authtoken"] || authResponse.data.iSession;
