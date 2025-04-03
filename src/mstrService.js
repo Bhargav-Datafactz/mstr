@@ -2,7 +2,7 @@ import axios from "axios";
  
 // Base API configuration with iSession cookies enabled
 const MSTR_API = axios.create({
-baseURL: "/MicroStrategyLibrary/api",
+baseURL: "/proxy/MicroStrategyLibrary/api",
   withCredentials: true, // Enables iSession cookie for authentication
 });
  
@@ -29,6 +29,8 @@ export const authenticateMSTR = async () => {
 
         // Extract Auth Token Correctly
         let authToken = authResponse.headers["x-mstr-authtoken"] || authResponse.data.iSession;
+        const cookies = document.cookie;
+        console.log("🍪 Cookies:", cookies);
 
         if (!authToken) {
             console.error("❌ Authentication failed: No Auth Token found!");
