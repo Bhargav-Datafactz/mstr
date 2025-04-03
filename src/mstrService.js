@@ -7,34 +7,58 @@ baseURL: "/MicroStrategyLibrary/api",
 });
  
 // 1️⃣ Authenticate and Start Session
+
 export const authenticateMSTR = async () => {
     try {
-      const response = await MSTR_API.post(
-        "/auth/login",
-        { username: "administrator", password: "" },
-        { headers: { "Content-Type": "application/json" } }
-      );
-  
-      console.log("📢 Full Login Response:", response);
-  
-      // Extract AuthToken correctly
-      const authToken = response.headers["x-mstr-authtoken"] || response.headers["X-MSTR-AuthToken"];
-      console.log("📢 Response Headers:", response.headers);
-      console.log("📢 Response Data:", response.data);
-  
-      if (!authToken) {
-        console.error("❌ Auth Token is missing! Possible login failure.");
-      } else {
-        console.log("✅ Authentication successful. Auth Token:", authToken);
-      }
-  
-      return authToken;
+        console.log("🔄 Attempting authentication...");
+
+        // Step 1: Authenticate and get session token
+        const authResponse = await axios.post(
+            "http://10.1.51.211:8080/MicroStrategyLibrary/api/v2/auth/login",
+            {
+                username: "administrator",
+                password: "your_password",
+                loginMode: 1
+            },
+            {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true // Ensures cookies are sent/received
+            }
+        );
+
+        console.log("📢 Full Login Response:", authResponse);
+
+        // Step 2: Extract the authentication token
+        let authToken = authResponse.headers["x-mstr-authtoken"]; // Preferred
+        if (!authToken && authResponse.data && authResponse.data.iSession) {
+            authToken = authResponse.data.iSession; // Fallback (if token in cookies)
+        }
+
+        if (!authToken) {
+            console.error("❌ Authentication failed: No Auth Token found!");
+            return;
+        }
+
+        console.log("✅ Auth Token received:", authToken);
+
+        // Step 3: Use Auth Token to Fetch Data
+        const dataResponse = await axios.get(
+            "http://10.1.51.211:8080/MicroStrategyLibrary/api/v2/some-endpoint",
+            {
+                headers: {
+                    "X-MSTR-AuthToken": authToken,
+                    "Accept": "application/json"
+                },
+                withCredentials: true // Ensure session cookies are included
+            }
+        );
+
+        console.log("📊 Data Response:", dataResponse.data);
     } catch (error) {
-      console.error("❌ Authentication Failed:", error.response?.data || error.message);
+        console.error("❌ Error during API call:", error.response ? error.response.data : error.message);
     }
+};
 
-
-  };
   
   
  
