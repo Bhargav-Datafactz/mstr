@@ -13,7 +13,7 @@ export const authenticateMSTR = async () => {
         console.log("🔄 Attempting authentication...");
 
         const authResponse = await axios.post(
-            "auth/login",
+            "/proxy/auth/login",
             {
                 username: "administrator",
                 password: "your_password",
@@ -47,7 +47,7 @@ export const authenticateMSTR = async () => {
 };
 
   
-  
+
  
 // 2️⃣ Create a Report Instance (Required Before Fetching Data)
 export const createMSTRReportInstance = async (REPORT_ID) => {
