@@ -8,36 +8,43 @@ baseURL: "/MicroStrategyLibrary/api",
  
 // 1️⃣ Authenticate and Start Session
 export const authenticateMSTR = async () => {
-  try {
-await MSTR_API.post("/auth/login", {
-      username: "administrator",
-      password: "",
-    });
-    console.log("✅ Authentication successful (iSession cookie set)");
-  } catch (error) {
-    console.error("❌ Authentication Failed:", error.response?.data || error.message);
-  }
-};
-console.log(authenticateMSTR)
+    try {
+      const response = await MSTR_API.post("/auth/login", {
+        username: "administrator",
+        password: "",
+      });
+  
+      // Extract the Auth Token
+      const authToken = response.headers["x-mstr-authtoken"];
+      console.log("✅ Authentication successful. Auth Token:", authToken);
+  
+      return authToken; // Return the token for use in other requests
+    } catch (error) {
+      console.error("❌ Authentication Failed:", error.response?.data || error.message);
+    }
+  };
+  
  
 // 2️⃣ Create a Report Instance (Required Before Fetching Data)
 export const createMSTRReportInstance = async (REPORT_ID) => {
     try {
+      const authToken = await authenticateMSTR(); // Get the Auth Token
+  
       const response = await MSTR_API.post(
         `/reports/${REPORT_ID}/instances`,
         {},
         {
           headers: {
             "X-MSTR-ProjectID": "95550C99497DAAC3AC19DD86D91C4BB3",
-            // "X-MSTR-AuthToken" : authenticateMSTR.headers.X-MSTR-AuthToken,
-            "Accept": "application/json",  // 👈 Force JSON response
+            "X-MSTR-AuthToken": authToken,  // 👈 Pass the Auth Token
+            "Accept": "application/json",
           }
         }
       );
   
       console.log("📢 Full Response from Create Instance API:", response);
   
-      // Check if response data is JSON
+      // Ensure we got a valid JSON response
       if (typeof response.data === "object" && response.data.instanceId) {
         console.log("✅ Report instance created. ID:", response.data.instanceId);
         return response.data.instanceId;
@@ -48,6 +55,7 @@ export const createMSTRReportInstance = async (REPORT_ID) => {
       console.error("❌ Error creating report instance:", error.response?.data || error.message);
     }
   };
+  
   
 
   
