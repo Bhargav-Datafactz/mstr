@@ -2,21 +2,22 @@ import axios from "axios";
  
 // Base API configuration with iSession cookies enabled
 const MSTR_API = axios.create({
-baseURL: "/MicroStrategyLibrary/api",
+baseURL: "http://10.1.51.211:8080/MicroStrategyLibrary/api",
   withCredentials: true, // Enables iSession cookie for authentication
 });
  
 // 1️⃣ Authenticate and Start Session
 export const authenticateMSTR = async () => {
     try {
-      const response = await MSTR_API.post("/auth/login", {
-        username: "administrator",
-        password: "",
-      });
+      const response = await MSTR_API.post(
+        "/auth/login",
+        { username: "administrator", password: "" },
+        { headers: { "Content-Type": "application/json" } }
+      );
   
       console.log("📢 Full Login Response:", response);
   
-      // Extract AuthToken from headers (ensure correct casing)
+      // Extract AuthToken correctly
       const authToken = response.headers["x-mstr-authtoken"] || response.headers["X-MSTR-AuthToken"];
   
       if (!authToken) {
@@ -25,11 +26,15 @@ export const authenticateMSTR = async () => {
         console.log("✅ Authentication successful. Auth Token:", authToken);
       }
   
-      return authToken; // Return token
+      return authToken;
     } catch (error) {
       console.error("❌ Authentication Failed:", error.response?.data || error.message);
     }
+    console.log("📢 Response Headers:", response.headers);
+    console.log("📢 Response Data:", response.data);
+
   };
+  
   
  
 // 2️⃣ Create a Report Instance (Required Before Fetching Data)
