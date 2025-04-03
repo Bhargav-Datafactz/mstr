@@ -14,11 +14,18 @@ export const authenticateMSTR = async () => {
         password: "",
       });
   
-      // Extract the Auth Token
-      const authToken = response.headers["x-mstr-authtoken"];
-      console.log("✅ Authentication successful. Auth Token:", authToken);
+      console.log("📢 Full Login Response:", response);
   
-      return authToken; // Return the token for use in other requests
+      // Extract AuthToken from headers (ensure correct casing)
+      const authToken = response.headers["x-mstr-authtoken"] || response.headers["X-MSTR-AuthToken"];
+  
+      if (!authToken) {
+        console.error("❌ Auth Token is missing! Possible login failure.");
+      } else {
+        console.log("✅ Authentication successful. Auth Token:", authToken);
+      }
+  
+      return authToken; // Return token
     } catch (error) {
       console.error("❌ Authentication Failed:", error.response?.data || error.message);
     }
@@ -28,7 +35,12 @@ export const authenticateMSTR = async () => {
 // 2️⃣ Create a Report Instance (Required Before Fetching Data)
 export const createMSTRReportInstance = async (REPORT_ID) => {
     try {
-      const authToken = await authenticateMSTR(); // Get the Auth Token
+      const authToken = await authenticateMSTR(); // Ensure token is retrieved
+  
+      if (!authToken) {
+        console.error("⚠️ Cannot create instance without Auth Token.");
+        return;
+      }
   
       const response = await MSTR_API.post(
         `/reports/${REPORT_ID}/instances`,
@@ -44,12 +56,11 @@ export const createMSTRReportInstance = async (REPORT_ID) => {
   
       console.log("📢 Full Response from Create Instance API:", response);
   
-      // Ensure we got a valid JSON response
       if (typeof response.data === "object" && response.data.instanceId) {
         console.log("✅ Report instance created. ID:", response.data.instanceId);
         return response.data.instanceId;
       } else {
-        console.error("❌ Unexpected Response (Not JSON)", response.data);
+        console.error("❌ Unexpected Response (Not JSON). Check authentication & API path.", response.data);
       }
     } catch (error) {
       console.error("❌ Error creating report instance:", error.response?.data || error.message);
