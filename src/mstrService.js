@@ -1,8 +1,8 @@
 import axios from "axios";
- 
+const BASE_URL = "http://10.1.51.211:8080/MicroStrategyLibrary/api";
 // Base API configuration with iSession cookies enabled
 const MSTR_API = axios.create({
-baseURL: "/MicroStrategyLibrary/api",
+baseURL: BASE_URL,
   withCredentials: true, // Enables iSession cookie for authentication
 });
  
@@ -13,7 +13,7 @@ export const authenticateMSTR = async () => {
         console.log("🔄 Attempting authentication...");
 
         const authResponse = await axios.post(
-            "/MicroStrategyLibrary/api/auth/login",
+            `${BASE_URL}/auth/login`,
             {
                 username: "administrator",
                 password: "",
@@ -25,7 +25,7 @@ export const authenticateMSTR = async () => {
                     "Content-Type": "application/json",
                     "X-Requested-With": "XMLHttpRequest"  // Prevents redirects
                   },
-                //withCredentials: true 
+                withCredentials: true, 
                 maxRedirects: 0, // 🚨 Prevents automatic redirects
                 validateStatus: (status) => status < 400 // Allow non-2xx responses
             }
@@ -37,10 +37,12 @@ export const authenticateMSTR = async () => {
         console.log("🔄 Response Headers:", authResponse.headers);
         console.log("🔄 Response Data:", authResponse.data);
 
-        // Extract Auth Token Correctly
-        let authToken = authResponse.headers["x-mstr-authtoken"] || authResponse.data.iSession;
-        const cookies = document.cookie;
-        console.log("🍪 Cookies:", cookies);
+        // ✅ Extract Auth Token from headers or cookies
+        let authToken = authResponse.headers["x-mstr-authtoken"];
+        if (!authToken) {
+            const cookies = document.cookie;
+            authToken = cookies.match(/iSession=([^;]+)/)?.[1];  // ✅ Extract from cookies
+        }
 
         if (!authToken) {
             console.error("❌ Authentication failed: No Auth Token found!");
@@ -55,11 +57,10 @@ export const authenticateMSTR = async () => {
         return null;  // 🔥 Return null on failure!
     }
 };
-
   
 
  
-// 2️⃣ Create a Report Instance (Required Before Fetching Data)
+// 2️⃣ Create a Report Instance
 export const createMSTRReportInstance = async (REPORT_ID) => {
     try {
         const authToken = await authenticateMSTR(); // Ensure token is retrieved
@@ -75,7 +76,7 @@ export const createMSTRReportInstance = async (REPORT_ID) => {
             {
                 headers: {
                     "X-MSTR-ProjectID": "95550C99497DAAC3AC19DD86D91C4BB3",
-                    "X-MSTR-AuthToken": authToken,  // Pass the Auth Token
+                    "X-MSTR-AuthToken": authToken,  // ✅ Pass the Auth Token
                     "Accept": "application/json",
                 }
             }
@@ -94,7 +95,7 @@ export const createMSTRReportInstance = async (REPORT_ID) => {
         console.error("❌ Error creating report instance:", error.response?.data || error.message);
         return null;
     }
-};
+}
 
   
   
