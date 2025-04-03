@@ -13,10 +13,10 @@ export const authenticateMSTR = async () => {
         console.log("🔄 Attempting authentication...");
 
         const authResponse = await axios.post(
-            "/MicroStrategyLibrary/auth/login",
+            "/MicroStrategyLibrary/api/auth/login",
             {
                 username: "administrator",
-                password: "your_password",
+                password: "",
                 loginMode: 1
             },
             {
