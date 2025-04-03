@@ -19,6 +19,8 @@ export const authenticateMSTR = async () => {
   
       // Extract AuthToken correctly
       const authToken = response.headers["x-mstr-authtoken"] || response.headers["X-MSTR-AuthToken"];
+      console.log("📢 Response Headers:", response.headers);
+      console.log("📢 Response Data:", response.data);
   
       if (!authToken) {
         console.error("❌ Auth Token is missing! Possible login failure.");
@@ -30,8 +32,7 @@ export const authenticateMSTR = async () => {
     } catch (error) {
       console.error("❌ Authentication Failed:", error.response?.data || error.message);
     }
-    console.log("📢 Response Headers:", response.headers);
-    console.log("📢 Response Data:", response.data);
+
 
   };
   
