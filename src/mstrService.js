@@ -31,6 +31,7 @@ export const createMSTRReportInstance = async (reportId) => {
           }
         }
       );
+      console.log("Create instance response:", response.data);
       return response.data.instanceId;
     } catch (error) {
       console.error("❌ Error creating report instance:", error.response?.data || error.message);

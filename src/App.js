@@ -12,15 +12,17 @@ const App = () => {
     const fetchReport = async () => {
       await authenticateMSTR(); // Authenticate and start session
       const instanceId = await createMSTRReportInstance(REPORT_ID);
+      console.log("Instance ID returned:", instanceId);
       
       if (instanceId) {
         const data = await getMSTRReportData(REPORT_ID, instanceId);
+        console.log("Report data:", data);
         setReportData(data);
  
         // Extract headers and row data
 const headerNames = data.result.definition.columns.map(col => col.name);
 const rowData = data.result.data.root.map(row => row.map(cell => cell.formatted));
-        
+console.log("Report data:", data);        
         setHeaders(headerNames);
         setRows(rowData);
       }
