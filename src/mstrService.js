@@ -2,7 +2,7 @@ import axios from "axios";
  
 // Base API configuration with iSession cookies enabled
 const MSTR_API = axios.create({
-baseURL: "http://10.1.51.211:8080/MicroStrategyLibrary/api",
+baseURL: "/MicroStrategyLibrary/api",
   withCredentials: true, // Enables iSession cookie for authentication
 });
  
