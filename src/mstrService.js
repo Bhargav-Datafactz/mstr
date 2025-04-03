@@ -22,23 +22,31 @@ await MSTR_API.post("/auth/login", {
 // 2️⃣ Create a Report Instance (Required Before Fetching Data)
 export const createMSTRReportInstance = async (REPORT_ID) => {
     try {
-        const response = await MSTR_API.post(
-            `/reports/${REPORT_ID}/instances`,
-            {},
-            {
-                headers: {
-                    "X-MSTR-ProjectID": "95550C99497DAAC3AC19DD86D91C4BB3"
-                }
-            }
-        );
-        console.log("Create instance full response:", response);
-        console.log("Create instance response data:", response.data);
-
+      const response = await MSTR_API.post(
+        `/reports/${REPORT_ID}/instances`,
+        {},
+        {
+          headers: {
+            "X-MSTR-ProjectID": "95550C99497DAAC3AC19DD86D91C4BB3",
+            "Accept": "application/json",  // 👈 Force JSON response
+          }
+        }
+      );
+  
+      console.log("📢 Full Response from Create Instance API:", response);
+  
+      // Check if response data is JSON
+      if (typeof response.data === "object" && response.data.instanceId) {
+        console.log("✅ Report instance created. ID:", response.data.instanceId);
         return response.data.instanceId;
+      } else {
+        console.error("❌ Unexpected Response (Not JSON)", response.data);
+      }
     } catch (error) {
-        console.error("❌ Error creating report instance:", error.response?.data || error.message);
+      console.error("❌ Error creating report instance:", error.response?.data || error.message);
     }
-};
+  };
+  
 
   
  
