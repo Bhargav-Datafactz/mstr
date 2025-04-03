@@ -14,7 +14,7 @@ export const authenticateMSTR = async () => {
 
         // Step 1: Authenticate and get session token
         const authResponse = await axios.post(
-            "http://10.1.51.211:8080/MicroStrategyLibrary/api/v2/auth/login",
+            "/auth/login",
             {
                 username: "administrator",
                 password: "your_password",
