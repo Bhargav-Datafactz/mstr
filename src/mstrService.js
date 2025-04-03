@@ -2,7 +2,7 @@ import axios from "axios";
  
 // Base API configuration with iSession cookies enabled
 const MSTR_API = axios.create({
-baseURL: "/proxy/MicroStrategyLibrary/api",
+baseURL: "/MicroStrategyLibrary/api",
   withCredentials: true, // Enables iSession cookie for authentication
 });
  
@@ -20,9 +20,14 @@ export const authenticateMSTR = async () => {
                 loginMode: 1
             },
             {
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"  // Prevents redirects
+                  },
                 withCredentials: true 
             }
+            
         );
 
         console.log("📢 Full Login Response:", authResponse);
