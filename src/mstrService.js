@@ -51,9 +51,9 @@ export const createMSTRReportInstance = async (REPORT_ID) => {
   
  
 // 3️⃣ Fetch Report Data
-export const getMSTRReportData = async (reportId, instanceId) => {
+export const getMSTRReportData = async (REPORT_ID, instanceId) => {
   try {
-    const response = await MSTR_API.get(`/reports/${reportId}/instances/${instanceId}`);
+    const response = await MSTR_API.get(`/reports/${REPORT_ID}/instances/${instanceId}`);
 return response.data; // Return report data
   } catch (error) {
     console.error("❌ Error fetching report data:", error.response?.data || error.message);
