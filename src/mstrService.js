@@ -2,8 +2,9 @@ import axios from "axios";
 const BASE_URL = "http://10.1.51.211:8080/MicroStrategyLibrary/api";
 // Base API configuration with iSession cookies enabled
 const MSTR_API = axios.create({
-baseURL: BASE_URL,
+  baseURL: BASE_URL,
   withCredentials: true, // Enables iSession cookie for authentication
+  httpsAgent: new (require("https").Agent)({ rejectUnauthorized: false })
 });
  
 // 1️⃣ Authenticate and Start Session
@@ -12,8 +13,8 @@ export const authenticateMSTR = async () => {
     try {
         console.log("🔄 Attempting authentication...");
 
-        const authResponse = await axios.post(
-            `${BASE_URL}/auth/login`,
+        const authResponse = await MSTR_API.post(
+            `/auth/login`,
             {
                 username: "administrator",
                 password: "",
@@ -24,12 +25,10 @@ export const authenticateMSTR = async () => {
                     "Accept": "application/json",
                     "Content-Type": "application/json",
                     "X-Requested-With": "XMLHttpRequest"  // Prevents redirects
-                  },
-                withCredentials: true, 
+                },
                 maxRedirects: 0, // 🚨 Prevents automatic redirects
                 validateStatus: (status) => status < 400 // Allow non-2xx responses
             }
-            
         );
 
        // console.log("📢 Full Login Response:", authResponse);
