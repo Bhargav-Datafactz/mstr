@@ -14,7 +14,7 @@ export const authenticateMSTR = async () => {
         console.log("🔄 Attempting authentication...");
 
         // First, try to get the login page to handle any redirects
-        await MSTR_API.get('http://10.1.51.211:8080/auth/login', {
+        await MSTR_API.get('http://10.1.51.211:8080/api/auth/login', {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
