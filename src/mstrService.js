@@ -22,7 +22,7 @@ export const authenticateMSTR = async () => {
         });
 
         const authResponse = await MSTR_API.post(
-            `/auth/login`,
+            axios.post(`${BASE_URL}/auth/login`),
             {
                 username: "administrator",
                 password: "",
