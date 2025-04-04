@@ -1,6 +1,6 @@
 import axios from "axios";
 // Use relative URL since we're using proxy
-const BASE_URL = "/MicroStrategyLibrary/api";
+const BASE_URL = "http://10.1.51.211:8080/MicroStrategyLibrary/api";
 // Base API configuration with iSession cookies enabled
 const MSTR_API = axios.create({
   baseURL: BASE_URL,
@@ -14,7 +14,7 @@ export const authenticateMSTR = async () => {
         console.log("🔄 Attempting authentication...");
 
         // First, try to get the login page to handle any redirects
-        await MSTR_API.get('/auth/login', {
+        await MSTR_API.get('http://10.1.51.211:8080/auth/login', {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
